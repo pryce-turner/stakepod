@@ -14,19 +14,22 @@ spec:
   containers:
   - command:
     - erigon
-    - --datadir
-    - /home/erigon/.local/share/erigon
-    - --prune
-    - htc
-    - --chain
-    - # Eth1 chain to follow (e.g. goerli, mainnet)
+    - --datadir=/home/erigon/.local/share/erigon
+    - --prune=htc
+    - --chain=mainnet # Eth1 chain to follow (e.g. goerli, mainnet)
     - --private.api.addr=localhost:9090
+    - --metrics 
+    - --metrics.addr=0.0.0.0
+    - --metrics.port=6060
+    - --pprof
+    - --pprof.addr=0.0.0.0
+    - --pprof.port=6061
     image: docker.io/thorax/erigon:latest
     name: erigon
     resources: {}
     securityContext:
       seLinuxOptions:
-        level: "s0:c100"
+        level: "s0:c100" # Category provides fs isolation from other containers, must be set beforehand
       capabilities:
         drop:
         - CAP_MKNOD
@@ -39,8 +42,7 @@ spec:
       name: erigon-host-datadir
   - command:
     - rpcdaemon
-    - --datadir
-    - /home/erigon/.local/share/erigon
+    - --datadir=/home/erigon/.local/share/erigon
     - --http.api=eth,erigon,web3,net,debug,trace,txpool
     - --ws
     - --private.api.addr=localhost:9090
@@ -49,7 +51,7 @@ spec:
     resources: {}
     securityContext:
       seLinuxOptions:
-        level: "s0:c100"
+        level: "s0:c100" # Category provides fs isolation from other containers, must be set beforehand
       capabilities:
         drop:
         - CAP_MKNOD
@@ -62,18 +64,19 @@ spec:
       name: erigon-host-datadir
   - command:
     - lighthouse
-    - --datadir
-    - /home
-    - --network
-    - # Eth2 chain lighthouse will follow (e.g. mainnet, prater)
+    - --datadir=/home
+    - --network=mainnet # Eth2 chain lighthouse will follow (e.g. mainnet, prater)
     - bn
     - --staking
+    - --validator-monitor-auto 
+    - --metrics
+    - --eth1-endpoints http://localhost:8545 # Specify additional endpoints (e.g. Infura) after a ','
     image: docker.io/sigp/lighthouse:latest
     name: beacon
     resources: {}
     securityContext:
       seLinuxOptions:
-        level: "s0:c200"
+        level: "s0:c200" # Category provides fs isolation from other containers, must be set beforehand
       capabilities:
         drop:
         - CAP_MKNOD
@@ -86,17 +89,17 @@ spec:
       name: lighthouse-host-datadir
   - command:
     - lighthouse
-    - --datadir
-    - /home
-    - --network
-    - # Eth2 chain lighthouse will follow (e.g. mainnet, prater)
+    - --datadir=/home
+    - --network=mainnet # Eth2 chain lighthouse will follow (e.g. mainnet, prater)
     - vc
+    - --enable-doppelganger-protection
+    - --beacon-nodes http://localhost:5052 # Specify additional endpoints (e.g. Infura) after a ','
     image: docker.io/sigp/lighthouse:latest
     name: validator
     resources: {}
     securityContext:
       seLinuxOptions:
-        level: "s0:c200"
+        level: "s0:c200" # Category provides fs isolation from other containers, must be set beforehand
       capabilities:
         drop:
         - CAP_MKNOD
