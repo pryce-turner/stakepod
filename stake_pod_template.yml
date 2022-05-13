@@ -1,0 +1,121 @@
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-3.4.4
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2022-04-29T08:49:29Z"
+  labels:
+    app: staker
+  name: stake_pod
+spec:
+  shareProcessNamespace: true
+  containers:
+  - command:
+    - erigon
+    - --datadir
+    - /home/erigon/.local/share/erigon
+    - --prune
+    - htc
+    - --chain
+    - # Eth1 chain to follow (e.g. goerli, mainnet)
+    - --private.api.addr=localhost:9090
+    image: docker.io/thorax/erigon:latest
+    name: erigon
+    resources: {}
+    securityContext:
+      seLinuxOptions:
+        level: "s0:c100"
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_NET_RAW
+        - CAP_AUDIT_WRITE
+      runAsGroup: 1000
+      runAsUser: 1000
+    volumeMounts:
+    - mountPath: /home/erigon/.local/share/erigon
+      name: erigon-host-datadir
+  - command:
+    - rpcdaemon
+    - --datadir
+    - /home/erigon/.local/share/erigon
+    - --http.api=eth,erigon,web3,net,debug,trace,txpool
+    - --ws
+    - --private.api.addr=localhost:9090
+    image: docker.io/thorax/erigon:latest
+    name: erigon-rpc
+    resources: {}
+    securityContext:
+      seLinuxOptions:
+        level: "s0:c100"
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_NET_RAW
+        - CAP_AUDIT_WRITE
+      runAsGroup: 1000
+      runAsUser: 1000
+    volumeMounts:
+    - mountPath: /home/erigon/.local/share/erigon
+      name: erigon-host-datadir
+  - command:
+    - lighthouse
+    - --datadir
+    - /home
+    - --network
+    - # Eth2 chain lighthouse will follow (e.g. mainnet, prater)
+    - bn
+    - --staking
+    image: docker.io/sigp/lighthouse:latest
+    name: beacon
+    resources: {}
+    securityContext:
+      seLinuxOptions:
+        level: "s0:c200"
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_NET_RAW
+        - CAP_AUDIT_WRITE
+      runAsGroup: 2000
+      runAsUser: 2000
+    volumeMounts:
+    - mountPath: /home
+      name: lighthouse-host-datadir
+  - command:
+    - lighthouse
+    - --datadir
+    - /home
+    - --network
+    - # Eth2 chain lighthouse will follow (e.g. mainnet, prater)
+    - vc
+    image: docker.io/sigp/lighthouse:latest
+    name: validator
+    resources: {}
+    securityContext:
+      seLinuxOptions:
+        level: "s0:c200"
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_NET_RAW
+        - CAP_AUDIT_WRITE
+      runAsGroup: 2000
+      runAsUser: 2000
+    volumeMounts:
+    - mountPath: /home
+      name: lighthouse-host-datadir
+  restartPolicy: Never
+  volumes: # Specify the paths to use on Host
+  - hostPath:
+      path: # Lighthouse path
+      type: Directory
+    name: lighthouse-host-datadir
+  - hostPath:
+      path: # Erigon path
+      type: Directory
+    name: erigon-host-datadir
+status: {}
+
