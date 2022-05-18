@@ -26,7 +26,7 @@
 
 3. Configure Template
 
-    Clone the template using `cp stake_pod_template.yml stake_pod_config.yml` and edit `stake_pod_config.yml` to suit your needs, following the comments. Most of the configuration comes down to what options you want to run the different clients with and storage.
+    Clone the template using `cp stake_pod_template.yml stake_pod_config.yml` and edit `stake_pod_config.yml` to suit your needs, following the comments. Most of the configuration comes down to what options you want to run the different clients with and storage. NOTE: If using persistentVolumeClaim, I encountered an issue where Podman wasn't assigning the correct user permissions to the lighthouse volume. I needed to run `podman volume inspect lighthouse-pvc` to obtain the path on disk, followed by manually running `podman unshare chown -R 2000:2000 /path/to/lighthouse-pvc`.
 
 4. Import Keys
 
@@ -36,7 +36,7 @@
 
     With everything configured correctly, you should be able to simply `podman play kube stake_pod_config.yml`. You can check that things are running with `podman ps -a` and see what they're working on with `podman logs container_name`. The most common issues I ran into were permission related, please revisit user permissions and SELinux context if your containers exit due to "Permission Denied" errors.
 
-TODO:
+## TODO:
 - systemd process for startup
 - monitoring
 - split config to avoid shared PID in lighthouse

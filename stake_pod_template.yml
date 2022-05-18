@@ -112,13 +112,19 @@ spec:
       name: lighthouse-host-datadir
   restartPolicy: Never
   volumes: # Specify the paths to use on Host
-  - hostPath:
-      path: # Lighthouse path
-      type: Directory
-    name: lighthouse-host-datadir
-  - hostPath:
-      path: # Erigon path
-      type: Directory
-    name: erigon-host-datadir
+  - name: lighthouse-host-datadir
+    # Uncomment *either* the peristentVolumeClaim block or the hostPath block for lighthouse storage 
+    # persistentVolumeClaim:
+    #   claimName: lighthouse-pvc
+    # hostPath: 
+    #   path: # Lighthouse path
+    #   type: Directory
+  - name: erigon-host-datadir
+    # Uncomment *either* the peristentVolumeClaim block or the hostPath block for erigon storage 
+    # persistentVolumeClaim:
+    #   claimName: erigon-pvc
+    # hostPath: 
+    #   path: # Erigon path
+    #   type: Directory
 status: {}
 
