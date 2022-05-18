@@ -70,7 +70,7 @@ spec:
     - --staking
     - --validator-monitor-auto 
     - --metrics
-    - --eth1-endpoints http://localhost:8545 # Specify additional endpoints (e.g. Infura) after a ','
+    - --eth1-endpoints=http://localhost:8545 # Specify additional endpoints (e.g. Infura) after a ','
     image: docker.io/sigp/lighthouse:latest
     name: beacon
     resources: {}
@@ -93,7 +93,7 @@ spec:
     - --network=mainnet # Eth2 chain lighthouse will follow (e.g. mainnet, prater)
     - vc
     - --enable-doppelganger-protection
-    - --beacon-nodes http://localhost:5052 # Specify additional endpoints (e.g. Infura) after a ','
+    - --beacon-nodes=http://localhost:5052 # Specify additional endpoints (e.g. Infura) after a ','
     image: docker.io/sigp/lighthouse:latest
     name: validator
     resources: {}
