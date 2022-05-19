@@ -8,7 +8,7 @@
 - daemonless / rootless: leverage Podman for secure, low-overhead containers, with an eye for extending to a K8s cluster
 
 ## Quickstart
-- `cd ~ && git clone (git repo) && cd stakepod`
+- `cd ~ && git clone https://github.com/pryce-turner/stakepod.git && cd stakepod`
 - `cp stake_pod_template.yml stake_pod_config.yml`
 - Configure `stake_pod_config.yml` following the comments
 - `podman play kube stake_pod_config.yml`
