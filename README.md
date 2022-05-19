@@ -1,5 +1,6 @@
 # StakePod
 ### Eth2 staking using Podman and the K8s pod spec for a quick and simple setup
+### Note: This project currently only support Erigon and Lighthouse
 
 ## Motivation:
 - easy setup / disaster recovery: deploy everything with as few commands / configs as possible
@@ -9,7 +10,7 @@
 
 ## Quickstart
 - `cd ~ && git clone https://github.com/pryce-turner/stakepod.git && cd stakepod`
-- `cp stake_pod_template.yml stake_pod_config.yml`
+- `cp erigon_lighthouse_template.yml stake_pod_config.yml`
 - Configure `stake_pod_config.yml` following the comments
 - `podman play kube stake_pod_config.yml`
 
@@ -26,7 +27,7 @@
 
 3. Configure Template
 
-    Clone the template using `cp stake_pod_template.yml stake_pod_config.yml` and edit `stake_pod_config.yml` to suit your needs, following the comments. Most of the configuration comes down to what options you want to run the different clients with and storage. NOTE: If using persistentVolumeClaim, I encountered an issue where Podman wasn't assigning the correct user permissions to the lighthouse volume. I needed to run `podman volume inspect lighthouse-pvc` to obtain the path on disk, followed by manually running `podman unshare chown -R 2000:2000 /path/to/lighthouse-pvc`.
+    Clone the template using `cp erigon_lighthouse_template.yml stake_pod_config.yml` and edit `stake_pod_config.yml` to suit your needs, following the comments. Most of the configuration comes down to what options you want to run the different clients with and storage. NOTE: If using persistentVolumeClaim, I encountered an issue where Podman wasn't assigning the correct user permissions to the lighthouse volume. I needed to run `podman volume inspect lighthouse-pvc` to obtain the path on disk, followed by manually running `podman unshare chown -R 2000:2000 /path/to/lighthouse-pvc`.
 
 4. Import Keys
 
