@@ -1,6 +1,6 @@
 # StakePod
 ### Eth2 staking using Podman and the K8s pod spec for a quick and simple setup
-### Note: This project currently only support Erigon and Lighthouse
+### Note: This project currently only supports Erigon and Lighthouse
 
 ## Motivation:
 - easy setup / disaster recovery: deploy everything with as few commands / configs as possible
